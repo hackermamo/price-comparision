@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.title }}</title>
+</head>
+<body>
+    <h2>{{ product.title }}</h2>
+    <img src="{{ product.image }}" alt="Product Image" width="200">
+    <p>Price: ₹{{ product.price }}</p>
+    <p>Site: {{ product.site }}</p>
+    <p><a href="{{ product.link }}" target="_blank">View on {{ product.site }}</a></p>
+    <a href="/">Back</a>
+</body>
+</html>

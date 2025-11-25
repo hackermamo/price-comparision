@@ -1,0 +1,45 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# VS Code settings
+.vscode/
+
+# Windows system files
+Thumbs.db
+desktop.ini
+
+# Python logs
+*.log
+
+# Cache folders
+hts-cache/
+*.cache/
+
+# Environment files
+.env
+*.env
+
+# Compiled files
+*.class
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Node / frontend (if used)
+node_modules/
+dist/
+build/
+
+# Screenshots / debug data (optional)
+screenshots/debug/
+
+# Data files you don't want public
+*.csv
+*.db

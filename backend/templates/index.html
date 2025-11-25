@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Price Comparison</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Mic icon style -->
+    <style>
+      .mic-icon {
+        display: inline-block;
+        inline-size: 16px;
+        block-size: 16px;
+        background-image: url("https://cdn-icons-png.flaticon.com/512/61/61012.png");
+        background-size: cover;
+        margin-inline-end: 5px;
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <!-- Button for mobile toggle -->
+      <button id="toggleButton" class="toggle-btn">☰</button>
+    </div>
+    <div class="wrapper">
+      <div class="content">
+        <div id="leftSidebar">
+          <h3>🔍 History</h3>
+          <ul id="searchHistory"></ul>
+          <button onclick="clearSearchHistory()" class="clear-history-btn">
+            🗑️ Clear All
+          </button>
+        </div>
+
+        <nav class="navbar">
+          <div class="container">
+            <!-- Logo and Name on the left side -->
+            <div class="logo">
+              <div class="logo-text">
+                <span class="price" style="color: rgb(255, 0, 0)">Price</span>
+                <span class="lok" style="color: rgb(229, 255, 0)">Lok</span>
+              </div>
+            </div>
+
+            <!-- Search bar in the middle -->
+            <button class="mobile-search-toggle">🔍</button>
+            <div class="search-box">
+              <input
+                type="text"
+                id="productInput"
+                placeholder="🔍 Search for a product..."
+              />
+              <button onclick="searchProduct()">Search</button>
+            </div>
+
+            <!-- Speak button and Dark mode toggle on the right side -->
+            <div class="buttons">
+              <button class="voice-button" onclick="startVoiceRecognition()">
+                <span class="mic-icon"></span> Speak
+              </button>
+              <label class="toggle-switch">
+                <input type="checkbox" id="darkModeToggle" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Results Section -->
+        <div
+          id="results"
+          class="results grid grid-cols-1 md:grid-cols-4 gap-4 mt-6"
+        >
+          <!-- Amazon -->
+          <div class="column" id="amazonResults">
+            <h2>Amazon</h2>
+          </div>
+
+          <!-- Flipkart -->
+          <div class="column" id="flipkartResults">
+            <h2>Flipkart</h2>
+          </div>
+
+          <!-- Meesho -->
+          <div class="column" id="meeshoResults">
+            <h2>Meesho</h2>
+          </div>
+
+          <!-- Indiamart -->
+          <div class="column" id="indiamartResults">
+            <h2>Indiamart</h2>
+          </div>
+        </div>
+
+        <!-- Recommendations -->
+        <h1>Random Products by Site</h1>
+
+        {% for product in products %}
+        <div class="product-card">
+          <img src="{{ product.image }}" alt="Product Image" />
+          <h3>{{ product.title }}</h3>
+          <p>Price: {{ product.price }}</p>
+          <p>Rating: {{ product.rating }}</p>
+          <a href="{{ product.link }}" target="_blank">View</a>
+        </div>
+        {% endfor %}
+
+        <div id="recommendationBox">
+          <h3>🧑‍💻Product Recommendations✌️</h3>
+          <div id="recommendations"></div>
+          <div id="smart-recommendations"></div>
+        </div>
+
+        <!-- 🎤 Voice Listening Modal -->
+        <div id="voiceModal" class="voice-modal hidden">
+          <div class="voice-popup">
+            <div class="waveform">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <p>Listening… Speak Now</p>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <p>
+          🔗 Powered by <strong>AI Price Comparison</strong> | &copy; 2025. All
+          rights reserved.
+        </p>
+      </footer>
+    </div>
+    <!-- Main Script -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <!-- 🌙 Auto Dark Mode Toggle State Persistence -->
+    <!-- This part handles loading and toggling the dark mode based on previous user selection -->
+    <script>
+      window.onload = () => {
+        const darkToggle = document.getElementById("darkModeToggle");
+        const darkModeEnabled = localStorage.getItem("dark-mode") === "true";
+        if (darkModeEnabled) {
+          document.body.classList.add("dark-mode");
+          if (darkToggle) darkToggle.checked = true;
+        }
+
+        document
+          .getElementById("darkModeToggle")
+          .addEventListener("change", function () {
+            document.body.classList.toggle("dark-mode", this.checked);
+            localStorage.setItem("dark-mode", this.checked); // 🔄 Save state
+          });
+      };
+
+      function refreshProduct(site) {
+        fetch(`/refresh/${site}`)
+          .then((response) => response.json())
+          .then((product) => {
+            const container = document.getElementById(site);
+            container.querySelector("img").src = product.image;
+            container.querySelector("a").href = `/product/${site}/0`;
+            container.querySelector("p:nth-of-type(1)").innerText =
+              "₹" + product.price;
+            container.querySelector("p:nth-of-type(2)").innerText =
+              product.site;
+          });
+      }
+    </script>
+  </body>
+</html>
